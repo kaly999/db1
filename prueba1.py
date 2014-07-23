@@ -1,5 +1,7 @@
-__author__ = 'kaly'
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
+from PyQt4 import QtGui
 
 import MySQLdb
 
@@ -12,10 +14,10 @@ class Database:
     db = "dbpyqt4"
 
     def __init__(self):
-        self.connection = MySQLdb.connect(host=self.host,
-                                          user=self.user,
-                                          password=self.password,
-                                          db=self.db)
+        self.connection = MySQLdb.connect(self.host,
+                                          self.user,
+                                          self.password,
+                                          self.db)
 
     def query(self, q):
         cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -26,22 +28,21 @@ class Database:
     def __del__(self):
         self.connection.close()
 
+
 if __name__ == "__main__":
+
     db = Database()
 
-    q = "DELETE FROM person"
-
-    db.query(q)
-
-    q = """
-        INSERT INTO `person`
-        (`Per_Dni`, `Per_Names`, `Per_Surname`, `Per_Date`)
-        VALUES
-        ('1111','jose','tomas','2014-01-01'),
-        ('1112','Miguel','Solis','2014-01-01')
-        """
+    q = "SELECT * FROM person"
 
     people = db.query(q)
 
     for person in people:
         print "found: %s " % person['Per_Names']
+
+    # generar ventana
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    ui = QtGui.QMainWindow()
+    ui.show()
+    sys.exit(app.exec_())   # MainLoop que me mantiene viva a la aplicación
